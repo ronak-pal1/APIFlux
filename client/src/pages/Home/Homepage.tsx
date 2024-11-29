@@ -1,7 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import dashboardImage from "../../assets/dashboard.png";
 import Footer from "../../components/Footer";
 
 const Homepage = () => {
+  const navigate = useNavigate();
+
   return (
     <div>
       {/* Hero section */}
@@ -13,9 +16,16 @@ const Homepage = () => {
             </h1>
 
             <h2 className="text-primary-b text-6xl">API</h2>
+            <p className="text-white text-xl font-light">
+              Schedule, Monitor your API with our seamless dashboard and
+              scheduling
+            </p>
           </div>
 
-          <button className="bg-primary-b mt-10 px-8 py-2 text-xl text-slate-300 rounded-md font-medium">
+          <button
+            onClick={() => navigate("/dashboard/schedule")}
+            className="bg-primary-b mt-10 px-8 py-2 text-xl text-slate-300 rounded-md font-medium"
+          >
             Get Started
           </button>
         </div>
@@ -48,7 +58,10 @@ const Homepage = () => {
       </div>
 
       <div className="w-full flex justify-center my-20">
-        <button className="bg-primary-b mt-10 px-8 py-2 text-xl text-slate-300 rounded-md font-medium">
+        <button
+          onClick={() => navigate("/dashboard/schedule")}
+          className="bg-primary-b mt-10 px-8 py-2 text-xl text-slate-300 rounded-md font-medium"
+        >
           Get Started
         </button>
       </div>

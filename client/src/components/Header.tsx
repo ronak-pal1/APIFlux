@@ -1,10 +1,16 @@
 import { GitHub } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
-const Header = () => {
+const Header = ({ isFixed }: { isFixed: boolean }) => {
   return (
-    <header className="flex justify-between px-10 py-7 fixed top-0 left-0 w-full backdrop-blur-md">
-      <h1 className="text-white text-3xl">APIFlux</h1>
+    <header
+      className={`flex justify-between px-10 py-7 ${
+        isFixed && "fixed top-0 left-0 w-full"
+      } backdrop-blur-md`}
+    >
+      <Link to={"/"} className="text-white text-3xl">
+        APIFlux
+      </Link>
 
       <div className="flex space-x-4">
         <Link
