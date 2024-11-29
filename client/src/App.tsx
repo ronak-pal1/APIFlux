@@ -4,6 +4,8 @@ import DashboardLayout from "./pages/Dashboard/DashboardLayout";
 import SchedulePage from "./pages/Dashboard/Schedule/SchedulePage";
 import StatisticsPage from "./pages/Dashboard/Statistics/StatisticsPage";
 import HomeLayout from "./pages/Home/HomeLayout";
+import SignIn from "./pages/Authentication/SignIn";
+import SignUp from "./pages/Authentication/SignUp";
 
 function App() {
   return (
@@ -11,6 +13,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomeLayout />}>
           <Route index element={<Homepage />} />
+          <Route path="signin/" element={<SignIn />} />
+          <Route path="signup/" element={<SignUp />} />
         </Route>
 
         <Route path="dashboard/" element={<DashboardLayout />}>

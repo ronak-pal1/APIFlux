@@ -16,11 +16,11 @@ const requestColor = (type: REQUEST_TYPE) => {
 
 const ScheduleCard = ({
   endpoint,
-  frequency,
+  timePeriod,
   requestType,
 }: {
   endpoint: string;
-  frequency: string;
+  timePeriod: string;
   requestType: REQUEST_TYPE;
 }) => {
   const [requestC, setRequestC] = useState<string>("#ADEBAD");
@@ -47,16 +47,18 @@ const ScheduleCard = ({
           <input
             type="text"
             value={endpoint}
+            onChange={() => {}}
             className="bg-transparent w-[250px] outline-none text-slate-400"
           />
           <Edit className="text-slate-300" fontSize="small" />
         </div>
 
         <div className="flex items-center space-x-3">
-          <h2 className="text-slate-300 text-lg font-medium">Frequency :</h2>
+          <h2 className="text-slate-300 text-lg font-medium">Time Period :</h2>
           <input
             type="text"
-            value={frequency}
+            value={timePeriod}
+            onChange={() => {}}
             className="bg-transparent w-[80px] outline-none text-slate-400"
           />
           <Edit className="text-slate-300" fontSize="small" />
@@ -72,35 +74,71 @@ const ScheduleCard = ({
   );
 };
 
+interface ScheduleInfo {
+  endpoint: string;
+  requestType: REQUEST_TYPE;
+  timePeriod: string;
+}
+
 const SchedulePage = () => {
+  const [scheduledAPIs, setScheduledAPIs] = useState<ScheduleInfo[]>([]);
+
+  const [endpoint, setEndpoint] = useState<string>("");
+  const [timePeriod, setTimePeriod] = useState<string>("1m");
+  const [requestType, setRequestType] = useState<string>("GET");
+
+  const scheduleAPI = () => {
+    if (!endpoint || !timePeriod) return;
+    setScheduledAPIs([
+      {
+        endpoint,
+        timePeriod,
+        requestType: requestType as REQUEST_TYPE,
+      },
+      ...scheduledAPIs,
+    ]);
+
+    setEndpoint("");
+  };
+
   return (
     <div className="w-full h-full overflow-y-scroll no-scrollbar">
       <h1 className="text-white text-4xl font-medium">Schedule API</h1>
 
       <div className="mt-10">
         <div className="w-full flex flex-1 items-center  space-x-3">
-          <select className="py-3 px-3 bg-light-dark text-slate-300 rounded-md">
-            <option>GET</option>
-            <option>POST</option>
-            <option>PUT</option>
+          <select
+            className="py-3 px-3 bg-light-dark text-slate-300 rounded-md"
+            defaultValue={requestType}
+            onChange={(e) => setRequestType(e.target.value)}
+          >
+            <option value={"GET"}>GET</option>
+            <option value={"POST"}>POST</option>
+            <option value={"PUT"}>PUT</option>
           </select>
 
           <input
             type="text"
+            value={endpoint}
+            onChange={(e) => setEndpoint(e.target.value)}
             placeholder="https://example.com/api/v1/xyz"
             className="bg-light-dark px-7 py-3  w-full rounded-md outline-none text-slate-300"
           />
 
-          <button className="bg-primary-b px-8 py-2 text-lg text-slate-300 rounded-md">
+          <button
+            onClick={scheduleAPI}
+            className="bg-primary-b px-8 py-2 text-lg text-slate-300 rounded-md"
+          >
             Schedule
           </button>
         </div>
 
         <div className="flex items-center mt-7 space-x-3">
-          <h2 className="text-slate-300 text-lg font-medium">Frequency :</h2>
+          <h2 className="text-slate-300 text-lg font-medium">Time Period :</h2>
           <input
             type="text"
-            value={"1m"}
+            value={timePeriod}
+            onChange={(e) => setTimePeriod(e.target.value)}
             placeholder="1m/1d/1w/1M"
             className="bg-light-dark px-7 py-3  w-32 rounded-md outline-none text-slate-300"
           />
@@ -116,21 +154,14 @@ const SchedulePage = () => {
 
       {/* scheduled api cards */}
       <div className="w-full mt-7 h-full space-y-7">
-        <ScheduleCard
-          endpoint="https://example.com/api/v1/xyz"
-          frequency="1m"
-          requestType={REQUEST_TYPE.POST}
-        />{" "}
-        <ScheduleCard
-          endpoint="https://example.com/api/v1/xyz"
-          frequency="1m"
-          requestType={REQUEST_TYPE.GET}
-        />
-        <ScheduleCard
-          endpoint="https://example.com/api/v1/xyz"
-          frequency="1m"
-          requestType={REQUEST_TYPE.PUT}
-        />
+        {scheduledAPIs.map((api, key) => (
+          <ScheduleCard
+            key={key}
+            endpoint={api.endpoint}
+            timePeriod={api.timePeriod}
+            requestType={api.requestType}
+          />
+        ))}
       </div>
     </div>
   );

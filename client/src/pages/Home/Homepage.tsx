@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import dashboardImage from "../../assets/dashboard.png";
+import statisticsImage from "../../assets/statistics-image.png";
+import healthMonitorImage from "../../assets/health-monitor-image.png";
 import Footer from "../../components/Footer";
 
 const Homepage = () => {
@@ -46,15 +48,38 @@ const Homepage = () => {
         </div>
       </div>
 
-      {/* Monitoring image */}
-      <div className="w-full flex flex-1 px-20 my-44 items-center">
-        <div className="flex-[0.3]">
+      {/* Monitoring section */}
+      <div className="w-full flex flex-1 px-20 my-60 items-center">
+        <div className="flex-[0.4]">
           <h2 className="text-primary-g text-5xl font-semibold leading-normal">
             Monitor API Health Periodicially
           </h2>
         </div>
 
-        <div className="flex-[0.7] flex justify-center"></div>
+        <div className="flex-[0.6] flex justify-end">
+          <img
+            src={healthMonitorImage}
+            alt="calender image"
+            className="w-1/2 object-contain "
+          />
+        </div>
+      </div>
+
+      {/* Statistics section */}
+      <div className="w-full flex flex-1 px-20 my-44 mt-60 items-center">
+        <div className="flex-[0.7] flex justify-start w-full">
+          <img
+            src={statisticsImage}
+            alt="statistics image"
+            className="w-3/4 object-contain"
+          />
+        </div>
+
+        <div className="flex-[0.3]">
+          <h2 className="text-orange-300 text-5xl font-semibold leading-normal">
+            See the overall statistics on the dashboard
+          </h2>
+        </div>
       </div>
 
       <div className="w-full flex justify-center my-20">
