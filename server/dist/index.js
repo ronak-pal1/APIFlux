@@ -113,12 +113,69 @@ app.post("/add-schedule", (req, res) => __awaiter(void 0, void 0, void 0, functi
             return;
         }
         user.scheduledAPIs.push(apiSchedule);
-        yield user.save();
-        res.status(200).json({ message: "API schedule is added successfully" });
+        const savedAPI = yield user.save();
+        res.status(200).json({
+            message: "API schedule is added successfully",
+            id: savedAPI._id,
+        });
     }
     catch (e) {
         console.error("Error in adding the schedule", e);
         res.status(500).json({ message: "Error in adding a new schedule" });
+    }
+}));
+// Endpoint for deleting a schedule
+app.post("/delete-schedule", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.body.userId;
+    const scheduleId = req.body.id;
+    if (!scheduleId || !userId)
+        res
+            .status(400)
+            .json({ message: "scheduleId or userId parameter is not given" });
+    try {
+        const user = yield userModel_1.UserModel.findById(userId);
+        if (!user) {
+            res.status(404).json({ message: "User is not found" });
+            return;
+        }
+        user.scheduledAPIs = user.scheduledAPIs.filter((api) => api._id != scheduleId);
+        yield user.save();
+        res.status(200).json({
+            message: "Scheduled API is deleted successfully",
+        });
+    }
+    catch (e) {
+        console.error("Error in deleting the schedule", e);
+        res.status(500).json({ message: "Error in deleting the schedule" });
+    }
+}));
+// Endpoint for updating a schedule
+app.post("/update-schedule", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.body.userId;
+    const scheduleId = req.body.id;
+    const newEndpoint = req.body.endpoint;
+    if (!scheduleId || !userId || !newEndpoint) {
+        res.status(400).json({
+            message: "scheduleId or userId or endpoint parameter is not given",
+        });
+        return;
+    }
+    try {
+        const user = yield userModel_1.UserModel.findById(userId);
+        if (!user) {
+            res.status(404).json({ message: "User is not found" });
+            return;
+        }
+        const api = user.scheduledAPIs.filter((api) => api._id == scheduleId);
+        api[0].endpoint = newEndpoint;
+        yield user.save();
+        res.status(200).json({
+            message: "Scheduled API is updated successfully",
+        });
+    }
+    catch (e) {
+        console.error("Error in updating the schedule", e);
+        res.status(500).json({ message: "Error in updating the schedule" });
     }
 }));
 // Endpoint for getting all the schedules

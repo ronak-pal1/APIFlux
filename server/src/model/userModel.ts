@@ -1,4 +1,4 @@
-import { model, Model, Schema } from "mongoose";
+import mongoose, { model, Model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -8,6 +8,7 @@ export interface IUser extends Document {
   password: string;
   refreshToken: string;
   scheduledAPIs: Array<{
+    _id: string;
     endpoint: string;
     requestType: string;
     totalRequests: number;

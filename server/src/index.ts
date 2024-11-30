@@ -125,12 +125,83 @@ app.post("/add-schedule", async (req, res) => {
 
     user.scheduledAPIs.push(apiSchedule);
 
-    await user.save();
+    const savedAPI = await user.save();
 
-    res.status(200).json({ message: "API schedule is added successfully" });
+    res.status(200).json({
+      message: "API schedule is added successfully",
+      id: savedAPI._id,
+    });
   } catch (e) {
     console.error("Error in adding the schedule", e);
     res.status(500).json({ message: "Error in adding a new schedule" });
+  }
+});
+
+// Endpoint for deleting a schedule
+app.post("/delete-schedule", async (req, res) => {
+  const userId = req.body.userId;
+  const scheduleId = req.body.id;
+
+  if (!scheduleId || !userId)
+    res
+      .status(400)
+      .json({ message: "scheduleId or userId parameter is not given" });
+
+  try {
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      res.status(404).json({ message: "User is not found" });
+      return;
+    }
+
+    user.scheduledAPIs = user.scheduledAPIs.filter(
+      (api) => api._id != scheduleId
+    );
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Scheduled API is deleted successfully",
+    });
+  } catch (e) {
+    console.error("Error in deleting the schedule", e);
+    res.status(500).json({ message: "Error in deleting the schedule" });
+  }
+});
+
+// Endpoint for updating a schedule
+app.post("/update-schedule", async (req, res) => {
+  const userId = req.body.userId;
+  const scheduleId = req.body.id;
+  const newEndpoint = req.body.endpoint;
+
+  if (!scheduleId || !userId || !newEndpoint) {
+    res.status(400).json({
+      message: "scheduleId or userId or endpoint parameter is not given",
+    });
+    return;
+  }
+  try {
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      res.status(404).json({ message: "User is not found" });
+      return;
+    }
+
+    const api = user.scheduledAPIs.filter((api) => api._id == scheduleId);
+
+    api[0].endpoint = newEndpoint;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Scheduled API is updated successfully",
+    });
+  } catch (e) {
+    console.error("Error in updating the schedule", e);
+    res.status(500).json({ message: "Error in updating the schedule" });
   }
 });
 
