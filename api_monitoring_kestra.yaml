@@ -1,0 +1,105 @@
+id: api_monitoring_workflow
+namespace: ronak
+description: "Workflow to monitor APIs and save stats to mongodb"
+tasks:
+  - id: find_item_mongo
+    type: io.kestra.plugin.mongodb.Find
+    connection:
+      uri: "{{ kv('MONGO_URI') }}"
+    database: "test"
+    collection: "users"
+    filter:
+      _id:
+        $oid: 674a302fd13f9b389d1b66d0
+
+  - id: check_api_health
+    type: io.kestra.plugin.scripts.python.Script
+    description: "Ping the API and measure response time using Python"
+    beforeCommands:
+      - pip install requests kestra pymongo
+    script: |
+      import time
+      import requests
+      from kestra import Kestra
+      from pymongo import MongoClient
+      from bson.objectid import ObjectId
+
+      data = {{outputs.find_item_mongo.rows}}
+      client = MongoClient("{{kv('MONGO_URI')}}")
+
+      db = client["test"]
+      collection = db["users"]
+
+      for user in data:
+        for api in user['scheduledAPIs']:
+          print(api)
+          url = api['endpoint']
+          start_time = time.time()
+          try:
+              response = requests.get(url, timeout=15)
+              response_time = int((time.time() - start_time) * 1000)  # in milliseconds
+              http_status = response.status_code
+          except requests.exceptions.RequestException as e:
+              response_time = -1
+              http_status = -1
+
+          hit = api['hits']
+          totalRequests = api['totalRequests']
+
+          if http_status == 200 :
+            hit = hit+1
+            totalRequests = totalRequests + 1
+
+          query = {"_id": ObjectId('674a302fd13f9b389d1b66d0')}
+          new_values = {"$set": {"scheduledAPIs.$[elem].hits": hit, "scheduledAPIs.$[elem].totalRequests":totalRequests,"scheduledAPIs.$[elem].responseTime":response_time}}
+
+          array_filters = [{"elem._id": ObjectId(api['_id'])}]
+
+          # Update the document
+          result = collection.update_one(query, new_values, array_filters=array_filters)
+          
+          Kestra.outputs({
+              'HTTP_STATUS': http_status,
+              'RESPONSE_TIME': response_time,
+              'HIT': hit,
+              'TOTAL_REQUESTS': totalRequests
+          })
+
+  # - id: save_to_mongo
+  #   type: io.kestra.plugin.mongodb.Update
+  #   connection:
+  #     uri: "{{ kv('MONGO_URI') }}"
+  #   database: "test"
+  #   collection: "users"
+  #   filter:
+  #     _id:
+  #       $oid: 674a302fd13f9b389d1b66d0
+  #   document: {"$set": { "responseTime": {{ outputs.check_api_health.vars.RESPONSE_TIME }} }}
+
+  - id: log_metrics
+    type: io.kestra.plugin.core.log.Log
+    description: "Log API metrics for dashboard"
+    message: |
+      API Metrics:
+      - HTTP Status: {{ outputs.check_api_health.vars.HTTP_STATUS }}
+      - Response Time: {{ outputs.check_api_health.vars.RESPONSE_TIME }}ms
+
+errors:
+  - id: send_email_alert
+    type: io.kestra.plugin.notifications.mail.MailSend
+    description: "Send an email notification if API evaluation fails"
+    from: hello@kestra.io
+    to: hello@kestra.io
+    username: "{{ kv('EMAIL_USERNAME') }}"
+    password: "{{ kv('EMAIL_PASSWORD') }}"
+    subject: "Kestra workflow failed for the flow {{flow.id}} in the namespace {{flow.namespace}}"
+    htmlTextContent: "Failure alert for flow {{ flow.namespace }}.{{ flow.id }} with ID {{ execution.id }}"
+  - id: send_slack_alert
+    type: io.kestra.plugin.notifications.slack.SlackExecution
+    channel: "#general"
+    url: "{{ kv('SLACK_WEBHOOK') }}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "*/2 * * * *"
