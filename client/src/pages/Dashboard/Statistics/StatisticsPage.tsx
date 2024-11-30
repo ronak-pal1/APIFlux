@@ -1,6 +1,45 @@
 import { BarChart } from "@mui/x-charts";
+import { useEffect, useState } from "react";
+
+interface ScheduleInfo {
+  endpoint: string;
+  totalRequests: number;
+  responseTime: number;
+  hits: number;
+}
+
+const calAPIHealth = (hit: number, total: number): number => {
+  if (total == 0) return 0;
+
+  return Math.round((hit / total) * 100);
+};
 
 const StatisticsPage = () => {
+  const [scheduledAPIs, setScheduledAPIs] = useState<ScheduleInfo[]>([]);
+
+  const getSchedules = async () => {
+    const userId = localStorage.getItem("userId");
+
+    const url = import.meta.env.VITE_BACKEND_URL + `/schedules?id=${userId}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+
+    if (response.status === 200) {
+      const data = await response.json();
+
+      setScheduledAPIs(data.apiSchedules);
+    }
+  };
+
+  useEffect(() => {
+    getSchedules();
+  }, []);
+
   return (
     <div className="w-full h-full overflow-y-scroll no-scrollbar">
       <h1 className="text-white text-4xl font-medium">Statistics</h1>
@@ -62,77 +101,39 @@ const StatisticsPage = () => {
           <thead>
             <tr className="text-white [&>th]:py-4 text-lg border-b-[0.1px] border-b-slate-700 [&>th]:border-x-[0.1px] [&>th]:border-x-slate-700 ">
               <th style={{ borderLeftWidth: "0px" }}>Endpoint</th>
-              <th>Time Period</th>
               <th>API Health</th>
+              <th>Response Time</th>
               <th>Total Requests</th>
               <th style={{ borderRightWidth: "0px" }}>Hit</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr className="text-slate-300 text-center [&>td]:py-4 [&>td]:border-x-[0.1px] [&>td]:border-x-slate-700">
-              <td style={{ borderLeftWidth: "0px" }}>https://example.com</td>
-              <td>1m</td>
-              <td className="flex justify-center">
-                <div className="flex items-center space-x-3">
-                  <p>99%</p>
-                  <div className="w-6 h-1 bg-green-500"></div>
-                </div>
-              </td>
-              <td>100</td>
-              <td style={{ borderRightWidth: "0px" }}>99</td>
-            </tr>
-            <tr className="text-slate-300 text-center [&>td]:py-4 [&>td]:border-x-[0.1px] [&>td]:border-x-slate-700">
-              <td style={{ borderLeftWidth: "0px" }}>https://example.com</td>
-              <td>1m</td>
-              <td className="flex justify-center">
-                <div className="flex items-center space-x-3">
-                  <p>99%</p>
-                  <div className="w-6 h-1 bg-red-700"></div>
-                </div>
-              </td>
-              <td>100</td>
-              <td style={{ borderRightWidth: "0px" }}>99</td>
-            </tr>
+            {scheduledAPIs.map((api, key) => (
+              <tr
+                key={key}
+                className="text-slate-300 text-center [&>td]:py-4 [&>td]:border-x-[0.1px] [&>td]:border-x-slate-700"
+              >
+                <td style={{ borderLeftWidth: "0px" }}>{api.endpoint}</td>
+                <td className="flex justify-center">
+                  <div className="flex items-center space-x-3">
+                    <p>{calAPIHealth(api.hits, api.totalRequests)}%</p>
+                    <div
+                      className={`w-6 h-1  ${
+                        calAPIHealth(api.hits, api.totalRequests) >= 50
+                          ? "bg-green-500"
+                          : "bg-red-600"
+                      }`}
+                    ></div>
+                  </div>
+                </td>
 
-            <tr className="text-slate-300 text-center [&>td]:py-4 [&>td]:border-x-[0.1px] [&>td]:border-x-slate-700">
-              <td style={{ borderLeftWidth: "0px" }}>https://example.com</td>
-              <td>1m</td>
-              <td className="flex justify-center">
-                <div className="flex items-center space-x-3">
-                  <p>99%</p>
-                  <div className="w-6 h-1 bg-red-700"></div>
-                </div>
-              </td>
-              <td>100</td>
-              <td style={{ borderRightWidth: "0px" }}>99</td>
-            </tr>
+                <td>{api.responseTime} ms</td>
 
-            <tr className="text-slate-300 text-center [&>td]:py-4 [&>td]:border-x-[0.1px] [&>td]:border-x-slate-700">
-              <td style={{ borderLeftWidth: "0px" }}>https://example.com</td>
-              <td>1m</td>
-              <td className="flex justify-center">
-                <div className="flex items-center space-x-3">
-                  <p>99%</p>
-                  <div className="w-6 h-1 bg-red-700"></div>
-                </div>
-              </td>
-              <td>100</td>
-              <td style={{ borderRightWidth: "0px" }}>99</td>
-            </tr>
-
-            <tr className="text-slate-300 text-center [&>td]:py-4 [&>td]:border-x-[0.1px] [&>td]:border-x-slate-700">
-              <td style={{ borderLeftWidth: "0px" }}>https://example.com</td>
-              <td>1m</td>
-              <td className="flex justify-center">
-                <div className="flex items-center space-x-3">
-                  <p>99%</p>
-                  <div className="w-6 h-1 bg-red-700"></div>
-                </div>
-              </td>
-              <td>100</td>
-              <td style={{ borderRightWidth: "0px" }}>99</td>
-            </tr>
+                <td>{api.totalRequests}</td>
+                <td style={{ borderRightWidth: "0px" }}>{api.hits}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

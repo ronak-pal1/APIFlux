@@ -1,4 +1,4 @@
-import { Delete, Edit } from "@mui/icons-material";
+import { Edit } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 
 enum REQUEST_TYPE {
@@ -16,11 +16,9 @@ const requestColor = (type: REQUEST_TYPE) => {
 
 const ScheduleCard = ({
   endpoint,
-  timePeriod,
   requestType,
 }: {
   endpoint: string;
-  timePeriod: string;
   requestType: REQUEST_TYPE;
 }) => {
   const [requestC, setRequestC] = useState<string>("#ADEBAD");
@@ -37,8 +35,6 @@ const ScheduleCard = ({
         >
           {requestType} Endpoint
         </div>
-
-        <Delete className="text-slate-600 hover:text-red-300" />
       </div>
 
       <div className="mt-6 space-y-4">
@@ -53,7 +49,7 @@ const ScheduleCard = ({
           <Edit className="text-slate-300" fontSize="small" />
         </div>
 
-        <div className="flex items-center space-x-3">
+        {/* <div className="flex items-center space-x-3">
           <h2 className="text-slate-300 text-lg font-medium">Time Period :</h2>
           <input
             type="text"
@@ -62,12 +58,12 @@ const ScheduleCard = ({
             className="bg-transparent w-[80px] outline-none text-slate-400"
           />
           <Edit className="text-slate-300" fontSize="small" />
-        </div>
+        </div> */}
       </div>
 
       <div className="w-full mt-3 flex justify-end">
-        <button className="bg-primary-b px-7 py-1 text-slate-300 rounded-md">
-          Re-Schedule
+        <button className="bg-red-500 px-7 py-1 text-white rounded-md">
+          Delete
         </button>
       </div>
     </div>
@@ -77,29 +73,70 @@ const ScheduleCard = ({
 interface ScheduleInfo {
   endpoint: string;
   requestType: REQUEST_TYPE;
-  timePeriod: string;
 }
 
 const SchedulePage = () => {
   const [scheduledAPIs, setScheduledAPIs] = useState<ScheduleInfo[]>([]);
 
   const [endpoint, setEndpoint] = useState<string>("");
-  const [timePeriod, setTimePeriod] = useState<string>("1m");
   const [requestType, setRequestType] = useState<string>("GET");
 
-  const scheduleAPI = () => {
-    if (!endpoint || !timePeriod) return;
-    setScheduledAPIs([
-      {
-        endpoint,
-        timePeriod,
-        requestType: requestType as REQUEST_TYPE,
-      },
-      ...scheduledAPIs,
-    ]);
+  const scheduleAPI = async () => {
+    if (!endpoint) return;
 
-    setEndpoint("");
+    const userId = localStorage.getItem("userId");
+
+    const url = import.meta.env.VITE_BACKEND_URL + `/add-schedule`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({
+        userId,
+        apiSchedule: {
+          endpoint,
+          requestType,
+        },
+      }),
+    });
+
+    if (response.status === 200) {
+      setScheduledAPIs([
+        {
+          endpoint,
+          requestType: requestType as REQUEST_TYPE,
+        },
+        ...scheduledAPIs,
+      ]);
+
+      setEndpoint("");
+    }
   };
+
+  const getSchedules = async () => {
+    const userId = localStorage.getItem("userId");
+
+    const url = import.meta.env.VITE_BACKEND_URL + `/schedules?id=${userId}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+
+    if (response.status === 200) {
+      const data = await response.json();
+
+      setScheduledAPIs(data.apiSchedules);
+    }
+  };
+
+  useEffect(() => {
+    getSchedules();
+  }, []);
 
   return (
     <div className="w-full h-full overflow-y-scroll no-scrollbar">
@@ -133,7 +170,7 @@ const SchedulePage = () => {
           </button>
         </div>
 
-        <div className="flex items-center mt-7 space-x-3">
+        {/* <div className="flex items-center mt-7 space-x-3">
           <h2 className="text-slate-300 text-lg font-medium">Time Period :</h2>
           <input
             type="text"
@@ -142,7 +179,7 @@ const SchedulePage = () => {
             placeholder="1m/1d/1w/1M"
             className="bg-light-dark px-7 py-3  w-32 rounded-md outline-none text-slate-300"
           />
-        </div>
+        </div> */}
       </div>
 
       {/* info */}
@@ -158,7 +195,6 @@ const SchedulePage = () => {
           <ScheduleCard
             key={key}
             endpoint={api.endpoint}
-            timePeriod={api.timePeriod}
             requestType={api.requestType}
           />
         ))}

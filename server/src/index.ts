@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import { UserModel } from "./model/userModel";
 import authMiddleware from "./middlewares/authMiddleware";
 
-const PORT = 6000;
+const PORT = 3000;
 
 dotenv.config();
 
@@ -24,10 +24,9 @@ const connectDB = async () => {
 connectDB();
 
 const app = express();
-
-app.use(cors());
-
 app.use(express.json());
+
+app.use(cors({ origin: "*" }));
 
 // Endpoint for signin task
 app.post("/signin", async (req, res) => {
@@ -151,12 +150,10 @@ app.get("/schedules", async (req, res) => {
       return;
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Fetched all the API schedules successfully",
-        apiSchedules: user.scheduledAPIs,
-      });
+    res.status(200).json({
+      message: "Fetched all the API schedules successfully",
+      apiSchedules: user.scheduledAPIs,
+    });
   } catch (e) {
     console.error("Error in fetching all the API schedules");
 

@@ -1,9 +1,19 @@
 import { GitHub } from "@mui/icons-material";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Header = ({ isFixed }: { isFixed: boolean }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    const route = location.pathname.split("/")[1];
+
+    if (route == "dashboard") setIsLoggedIn(true);
+    else setIsLoggedIn(false);
+  }, [location]);
   return (
     <header
       className={`flex justify-between px-10 py-7 ${
@@ -22,12 +32,15 @@ const Header = ({ isFixed }: { isFixed: boolean }) => {
         >
           <GitHub /> <p>Repository</p>
         </Link>
-        <button
-          onClick={() => navigate("/signin")}
-          className="bg-primary-b px-7 py-1 text-slate-300 rounded-md font-medium"
-        >
-          Login
-        </button>
+
+        {!isLoggedIn && (
+          <button
+            onClick={() => navigate("/signin")}
+            className="bg-primary-b px-7 py-1 text-slate-300 rounded-md font-medium"
+          >
+            Login
+          </button>
+        )}
       </div>
     </header>
   );

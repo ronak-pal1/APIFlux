@@ -18,7 +18,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const userModel_1 = require("./model/userModel");
-const PORT = 6000;
+const PORT = 3000;
 dotenv_1.default.config();
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -32,8 +32,8 @@ const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 connectDB();
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)());
 app.use(express_1.default.json());
+app.use((0, cors_1.default)({ origin: "*" }));
 // Endpoint for signin task
 app.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const email = req.body.email;
@@ -133,9 +133,7 @@ app.get("/schedules", (req, res) => __awaiter(void 0, void 0, void 0, function* 
             res.status(404).json({ message: "User is not found" });
             return;
         }
-        res
-            .status(200)
-            .json({
+        res.status(200).json({
             message: "Fetched all the API schedules successfully",
             apiSchedules: user.scheduledAPIs,
         });

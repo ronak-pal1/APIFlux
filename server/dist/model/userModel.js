@@ -36,10 +36,19 @@ const userSchema = new mongoose_1.Schema({
     scheduledAPIs: [
         {
             endpoint: String,
-            timePeriod: String,
             requestType: String,
-            totalRequests: Number,
-            hits: Number,
+            totalRequests: {
+                type: Number,
+                default: 0,
+            },
+            responseTime: {
+                type: Number,
+                default: 0,
+            },
+            hits: {
+                type: Number,
+                default: 0,
+            },
         },
     ],
     refreshToken: {

@@ -9,10 +9,10 @@ export interface IUser extends Document {
   refreshToken: string;
   scheduledAPIs: Array<{
     endpoint: string;
-    timePeriod: string;
     requestType: string;
     totalRequests: number;
     hits: number;
+    responseTime: number;
   }>;
   isPasswordCorrect(password: string): Promise<boolean>;
   generateAccessToken(): string;
@@ -40,10 +40,19 @@ const userSchema: Schema<IUser> = new Schema<IUser>({
   scheduledAPIs: [
     {
       endpoint: String,
-      timePeriod: String,
       requestType: String,
-      totalRequests: Number,
-      hits: Number,
+      totalRequests: {
+        type: Number,
+        default: 0,
+      },
+      responseTime: {
+        type: Number,
+        default: 0,
+      },
+      hits: {
+        type: Number,
+        default: 0,
+      },
     },
   ],
 
