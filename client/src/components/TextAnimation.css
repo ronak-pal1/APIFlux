@@ -1,0 +1,27 @@
+.text-container {
+  position: relative;
+  font-size: 2rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+.word {
+  position: absolute;
+
+  opacity: 0;
+  transform: translateY(-100px);
+  transition: all 1s ease;
+}
+
+.slide-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-out {
+  opacity: 0;
+  transform: translateY(100px);
+}

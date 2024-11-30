@@ -3,6 +3,7 @@ import dashboardImage from "../../assets/dashboard.png";
 import statisticsImage from "../../assets/statistics-image.png";
 import healthMonitorImage from "../../assets/health-monitor-image.png";
 import Footer from "../../components/Footer";
+import TextAnimation from "../../components/TextAnimation";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -12,11 +13,13 @@ const Homepage = () => {
       {/* Hero section */}
       <div className="w-full flex justify-center h-screen items-center bg-gradient-to-b from-black from-20% to-[#583df049] to-80%">
         <div className="flex flex-col items-center">
-          <div className="text-center space-y-8">
-            <h1 className=" text-8xl bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text">
-              Schedule
-            </h1>
-
+          <div className="text-center  flex flex-col items-center space-y-8">
+            {/* <div className="h-32 w-fit text-center overflow-hidden">
+              <h1 className=" text-8xl bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text">
+                Schedule
+              </h1>
+            </div   > */}
+            <TextAnimation />
             <h2 className="text-primary-b text-6xl">API</h2>
             <p className="text-white text-xl font-light">
               Schedule, Monitor your API with our seamless dashboard and
