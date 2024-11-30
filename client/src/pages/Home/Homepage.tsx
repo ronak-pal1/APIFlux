@@ -20,7 +20,7 @@ const Homepage = () => {
               </h1>
             </div   > */}
             <TextAnimation />
-            <h2 className="text-primary-b text-6xl">API</h2>
+            <h2 className="text-primary-b text-6xl font-bold">API</h2>
             <p className="text-white text-xl font-light">
               Schedule, Monitor your API with our seamless dashboard and
               scheduling
