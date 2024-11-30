@@ -6,6 +6,7 @@ import StatisticsPage from "./pages/Dashboard/Statistics/StatisticsPage";
 import HomeLayout from "./pages/Home/HomeLayout";
 import SignIn from "./pages/Authentication/SignIn";
 import SignUp from "./pages/Authentication/SignUp";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route index element={<Homepage />} />
           <Route path="signin/" element={<SignIn />} />
           <Route path="signup/" element={<SignUp />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
 
         <Route path="dashboard/" element={<DashboardLayout />}>
