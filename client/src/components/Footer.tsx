@@ -7,10 +7,11 @@ const Footer = () => {
         <div className="h-full flex flex-[0.3] items-center">
           <div className="space-y-3">
             <h1 className="text-white text-3xl font-semibold">
-              HackFrost Hackathon
+              For HackFrost Hackathon
             </h1>
             <h3 className="text-white text-xl font-extralight">
-              Made by Ronak Paul
+              Made by Ronak Paul with{" "}
+              <span className="text-primary-b font-bold">Kestra</span> ❤️
             </h3>
           </div>
         </div>
@@ -20,10 +21,10 @@ const Footer = () => {
             <h1 className="text-white font-semibold text-xl mb-3">Resources</h1>
 
             <div className="text-slate-300 text-sm flex flex-col space-y-2 font-light">
-              <Link to={"https://www.youtube.com/@CodaGo"} target="_blank">
+              <Link to={"/dashboard/schedule"} target="_blank">
                 Schedule API
               </Link>
-              <Link to={"https://github.com/ronak-pal1"} target="_blank">
+              <Link to={"/dashboard/statistics"} target="_blank">
                 Statistics
               </Link>
             </div>
