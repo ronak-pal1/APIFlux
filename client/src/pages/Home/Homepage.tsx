@@ -4,9 +4,18 @@ import statisticsImage from "../../assets/statistics-image.png";
 import healthMonitorImage from "../../assets/health-monitor-image.png";
 import Footer from "../../components/Footer";
 import TextAnimation from "../../components/TextAnimation";
+import { useEffect } from "react";
 
 const Homepage = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (
+      localStorage.getItem("accessToken") &&
+      localStorage.getItem("refreshToken")
+    )
+      navigate("/dashboard/schedule");
+  }, []);
 
   return (
     <div>

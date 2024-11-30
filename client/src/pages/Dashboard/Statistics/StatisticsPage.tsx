@@ -1,5 +1,6 @@
 import { BarChart } from "@mui/x-charts";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ScheduleInfo {
   endpoint: string;
@@ -14,8 +15,22 @@ const calAPIHealth = (hit: number, total: number): number => {
   return Math.round((hit / total) * 100);
 };
 
+interface barData {
+  apiHealths: number[];
+  responseTimes: number[];
+  totalRequests: number[];
+}
+
 const StatisticsPage = () => {
+  const navigate = useNavigate();
+
   const [scheduledAPIs, setScheduledAPIs] = useState<ScheduleInfo[]>([]);
+  const [barData, setBarData] = useState<barData>({
+    apiHealths: [],
+    responseTimes: [],
+    totalRequests: [],
+  });
+  const [barXLabels, setBarXLabels] = useState<string[]>([]);
 
   const getSchedules = async () => {
     const userId = localStorage.getItem("userId");
@@ -33,11 +48,42 @@ const StatisticsPage = () => {
       const data = await response.json();
 
       setScheduledAPIs(data.apiSchedules);
+
+      const apis = data.apiSchedules;
+
+      for (let i = 0; i < data.apiSchedules.length; i++) {
+        let barLabels = barXLabels;
+        barLabels.push(apis[i].endpoint);
+        setBarXLabels(barLabels);
+
+        let apiH = barData.apiHealths;
+        apiH.push(calAPIHealth(apis[i].hits, apis[i].totalRequests));
+
+        let responseT = barData.responseTimes;
+        responseT.push(apis[i].responseTime);
+
+        let totalR = barData.totalRequests;
+        totalR.push(apis[i].totalRequests);
+
+        setBarData({
+          apiHealths: apiH,
+          responseTimes: responseT,
+          totalRequests: totalR,
+        });
+      }
+
+      console.log(barXLabels);
+      console.log(barData);
     }
   };
 
   useEffect(() => {
-    getSchedules();
+    if (
+      !localStorage.getItem("accessToken") ||
+      !localStorage.getItem("refreshToken")
+    )
+      navigate("/signin");
+    else getSchedules();
   }, []);
 
   return (
@@ -48,9 +94,9 @@ const StatisticsPage = () => {
       <div className="mt-10">
         <BarChart
           series={[
-            { data: [51, 6, 49, 30] },
-            { data: [15, 25, 30, 50] },
-            { data: [60, 50, 15, 25] },
+            { data: barData.apiHealths },
+            { data: barData.responseTimes },
+            { data: barData.totalRequests },
           ]}
           height={290}
           sx={{
@@ -81,12 +127,7 @@ const StatisticsPage = () => {
           }}
           xAxis={[
             {
-              data: [
-                "example.com",
-                "exaple2.com",
-                "example3.com",
-                "example4.com",
-              ],
+              data: barXLabels,
               scaleType: "band",
             },
           ]}

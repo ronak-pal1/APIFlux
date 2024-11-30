@@ -1,6 +1,7 @@
 import { HistoryToggleOff, Leaderboard } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
+// Component for the containing the tabs of the sidebars
 const Box = ({
   text,
   Icon,
@@ -32,7 +33,19 @@ export enum ROUTES {
   "STATISTICS" = "statistics",
 }
 
+// The sidebar component of the dashboard
 const Sidebar = ({ currentRoute }: { currentRoute: ROUTES }) => {
+  const navigate = useNavigate();
+
+  // A minimal logout without the interaction of server just for simplicity
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("userId");
+
+    navigate("/");
+  };
+
   return (
     <div className="border-r-[0.1px] border-r-slate-700 h-full flex flex-col justify-between">
       <div>
@@ -51,7 +64,10 @@ const Sidebar = ({ currentRoute }: { currentRoute: ROUTES }) => {
       </div>
 
       <div className="mx-4 py-4">
-        <button className="bg-light-dark py-1 w-full text-red-300 rounded-md font-medium">
+        <button
+          onClick={logout}
+          className="bg-light-dark py-1 w-full text-red-300 rounded-md font-medium"
+        >
           Logout
         </button>
       </div>

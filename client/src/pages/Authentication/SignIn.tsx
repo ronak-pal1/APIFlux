@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// SignIn component
 const SignIn = () => {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+
+  // Checking is the user is already logged in
+  useEffect(() => {
+    if (
+      localStorage.getItem("accessToken") &&
+      localStorage.getItem("refreshToken")
+    )
+      navigate("/dashboard/schedule");
+  }, []);
 
   const signin = async (e: any) => {
     e.preventDefault();

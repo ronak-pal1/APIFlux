@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./TextAnimation.css";
 
+// Text animation in the hero section component
 const TextAnimation = () => {
   const [currentWord, setCurrentWord] = useState(0);
   const words = ["Schedule", "Monitor", "Analyse"];

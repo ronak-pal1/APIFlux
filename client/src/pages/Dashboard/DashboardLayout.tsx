@@ -3,6 +3,7 @@ import Header from "../../components/Header";
 import Sidebar, { ROUTES } from "../../components/Sidebar";
 import { useEffect, useState } from "react";
 
+// Component for dashboard layout only, which will include the sidebar
 const DashboardLayout = () => {
   const location = useLocation();
   const [routeTab, setRouteTab] = useState<ROUTES>(ROUTES.SCHEDULE);

@@ -1,10 +1,17 @@
 import { Edit } from "@mui/icons-material";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 enum REQUEST_TYPE {
   "GET" = "GET",
   "POST" = "POST",
   "PUT" = "PUT",
+}
+
+interface ScheduleInfo {
+  endpoint: string;
+  requestType: REQUEST_TYPE;
+  _id: string;
 }
 
 const requestColor = (type: REQUEST_TYPE) => {
@@ -14,18 +21,81 @@ const requestColor = (type: REQUEST_TYPE) => {
   else return "";
 };
 
+// This is the card for showing the info of scheduled API
 const ScheduleCard = ({
+  id,
   endpoint,
   requestType,
+  setScheduledAPIs,
 }: {
+  id: string;
   endpoint: string;
   requestType: REQUEST_TYPE;
+  setScheduledAPIs: React.Dispatch<React.SetStateAction<ScheduleInfo[]>>;
 }) => {
   const [requestC, setRequestC] = useState<string>("#ADEBAD");
+  const [isUpdatingEndpoint, setIsUpdatingEndpoint] = useState<boolean>(false);
+
+  const [inputEndpoint, setInputEndpoint] = useState<string>(endpoint);
 
   useEffect(() => {
     setRequestC(requestColor(requestType));
   }, [requestType]);
+
+  //   Function to delete a schedule from the database as well as from the react state
+  const deleteSchedule = async () => {
+    if (!id) return;
+
+    try {
+      const userId = localStorage.getItem("userId");
+      const url = import.meta.env.VITE_BACKEND_URL + `/delete-schedule`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+          userId,
+          id,
+        }),
+      });
+      if (response.status == 200) {
+        setScheduledAPIs((scheduledAPIs) =>
+          scheduledAPIs.filter((api) => api._id != id)
+        );
+      }
+    } catch (e) {
+      console.log("Error in deleting the schedule", e);
+    }
+  };
+
+  const updateSchedule = async () => {
+    if (inputEndpoint == endpoint) return;
+
+    try {
+      const userId = localStorage.getItem("userId");
+      const url = import.meta.env.VITE_BACKEND_URL + `/update-schedule`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({
+          userId,
+          id: id,
+          endpoint: inputEndpoint,
+        }),
+      });
+      if (response.status == 200) {
+        location.reload();
+      }
+    } catch (e) {
+      console.log("Error in  updating the schedule", e);
+    }
+  };
+
   return (
     <div className="w-full bg-light-dark px-7 py-5 rounded-md">
       <div className="flex items-center justify-between">
@@ -40,13 +110,24 @@ const ScheduleCard = ({
       <div className="mt-6 space-y-4">
         <div className="flex items-center space-x-3">
           <h2 className="text-slate-300 text-lg font-medium">Endpoint :</h2>
-          <input
-            type="text"
-            value={endpoint}
-            onChange={() => {}}
-            className="bg-transparent w-[250px] outline-none text-slate-400"
+          {isUpdatingEndpoint ? (
+            <input
+              type="text"
+              value={inputEndpoint}
+              onChange={(e) => {
+                setInputEndpoint(e.target.value);
+              }}
+              className="bg-transparent border-[0.1px] border-slate-600 px-2 rounded-sm py-1 w-[250px] outline-none text-slate-200"
+            />
+          ) : (
+            <p className="text-slate-400 w-[250px]">{endpoint}</p>
+          )}
+
+          <Edit
+            onClick={() => setIsUpdatingEndpoint(true)}
+            className="text-slate-300 cursor-pointer"
+            fontSize="small"
           />
-          <Edit className="text-slate-300" fontSize="small" />
         </div>
 
         {/* <div className="flex items-center space-x-3">
@@ -61,8 +142,19 @@ const ScheduleCard = ({
         </div> */}
       </div>
 
-      <div className="w-full mt-3 flex justify-end">
-        <button className="bg-red-500 px-7 py-1 text-white rounded-md">
+      <div className="w-full mt-3 flex justify-end space-x-3">
+        <button
+          onClick={updateSchedule}
+          className={`bg-primary-b px-7 py-1 text-white rounded-md  ${
+            inputEndpoint == endpoint && "opacity-25"
+          }`}
+        >
+          Update
+        </button>
+        <button
+          onClick={deleteSchedule}
+          className="bg-red-500 px-7 py-1 text-white rounded-md"
+        >
           Delete
         </button>
       </div>
@@ -70,12 +162,8 @@ const ScheduleCard = ({
   );
 };
 
-interface ScheduleInfo {
-  endpoint: string;
-  requestType: REQUEST_TYPE;
-}
-
 const SchedulePage = () => {
+  const navigate = useNavigate();
   const [scheduledAPIs, setScheduledAPIs] = useState<ScheduleInfo[]>([]);
 
   const [endpoint, setEndpoint] = useState<string>("");
@@ -103,10 +191,12 @@ const SchedulePage = () => {
     });
 
     if (response.status === 200) {
+      const data = await response.json();
       setScheduledAPIs([
         {
           endpoint,
           requestType: requestType as REQUEST_TYPE,
+          _id: data.id,
         },
         ...scheduledAPIs,
       ]);
@@ -135,7 +225,12 @@ const SchedulePage = () => {
   };
 
   useEffect(() => {
-    getSchedules();
+    if (
+      !localStorage.getItem("accessToken") ||
+      !localStorage.getItem("refreshToken")
+    )
+      navigate("/signin");
+    else getSchedules();
   }, []);
 
   return (
@@ -194,8 +289,10 @@ const SchedulePage = () => {
         {scheduledAPIs.map((api, key) => (
           <ScheduleCard
             key={key}
+            id={api._id}
             endpoint={api.endpoint}
             requestType={api.requestType}
+            setScheduledAPIs={setScheduledAPIs}
           />
         ))}
       </div>

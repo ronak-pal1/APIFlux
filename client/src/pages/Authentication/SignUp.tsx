@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// SignUp component
 const SignUp = () => {
   const navigate = useNavigate();
 
@@ -23,6 +24,16 @@ const SignUp = () => {
 
     if (response.status == 200) navigate("/signin");
   };
+
+  //   For checking is the user is already logged in or not
+  useEffect(() => {
+    if (
+      localStorage.getItem("accessToken") &&
+      localStorage.getItem("refreshToken")
+    )
+      navigate("/dashboard/schedule");
+  }, []);
+
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
       <h1 className="text-white text-3xl font-medium">Sign Up</h1>
