@@ -8,9 +8,6 @@ tasks:
       uri: "{{ kv('MONGO_URI') }}"
     database: "test"
     collection: "users"
-    filter:
-      _id:
-        $oid: 674a302fd13f9b389d1b66d0
 
   - id: check_api_health
     type: io.kestra.plugin.scripts.python.Script
