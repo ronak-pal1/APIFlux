@@ -48,7 +48,9 @@ const ScheduleCard = ({
 
     try {
       const userId = localStorage.getItem("userId");
-      const url = import.meta.env.VITE_PUBLIC_BACKEND_URL + `/delete-schedule`;
+      const url =
+        "http://ec2-43-204-230-105.ap-south-1.compute.amazonaws.com:3000" +
+        `/delete-schedule`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -75,7 +77,9 @@ const ScheduleCard = ({
 
     try {
       const userId = localStorage.getItem("userId");
-      const url = import.meta.env.VITE_PUBLIC_BACKEND_URL + `/update-schedule`;
+      const url =
+        "http://ec2-43-204-230-105.ap-south-1.compute.amazonaws.com:3000" +
+        `/update-schedule`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -174,7 +178,9 @@ const SchedulePage = () => {
 
     const userId = localStorage.getItem("userId");
 
-    const url = import.meta.env.VITE_PUBLIC_BACKEND_URL + `/add-schedule`;
+    const url =
+      "http://ec2-43-204-230-105.ap-south-1.compute.amazonaws.com:3000" +
+      `/add-schedule`;
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -209,7 +215,8 @@ const SchedulePage = () => {
     const userId = localStorage.getItem("userId");
 
     const url =
-      import.meta.env.VITE_PUBLIC_BACKEND_URL + `/schedules?id=${userId}`;
+      "http://ec2-43-204-230-105.ap-south-1.compute.amazonaws.com:3000" +
+      `/schedules?id=${userId}`;
     const response = await fetch(url, {
       method: "GET",
       headers: {

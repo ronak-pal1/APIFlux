@@ -12,7 +12,9 @@ const SignUp = () => {
   const signup = async (e: any) => {
     e.preventDefault();
 
-    const url = import.meta.env.VITE_PUBLIC_BACKEND_URL + "/signup";
+    const url =
+      "http://ec2-43-204-230-105.ap-south-1.compute.amazonaws.com:3000" +
+      "/signup";
     const response = await fetch(url, {
       method: "POST",
       headers: {

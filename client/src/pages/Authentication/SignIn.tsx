@@ -21,7 +21,8 @@ const SignIn = () => {
     e.preventDefault();
 
     const response = await fetch(
-      import.meta.env.VITE_PUBLIC_BACKEND_URL + "/signin",
+      "http://ec2-43-204-230-105.ap-south-1.compute.amazonaws.com:3000" +
+        "/signin",
       {
         method: "POST",
         headers: {
