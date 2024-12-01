@@ -12,9 +12,7 @@ const SignUp = () => {
   const signup = async (e: any) => {
     e.preventDefault();
 
-    const url =
-      "http://ec2-43-204-230-105.ap-south-1.compute.amazonaws.com:3000" +
-      "/signup";
+    const url = "https://apiflux.ronakpaul.com" + "/signup";
     const response = await fetch(url, {
       method: "POST",
       headers: {

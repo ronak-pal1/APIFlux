@@ -20,17 +20,13 @@ const SignIn = () => {
   const signin = async (e: any) => {
     e.preventDefault();
 
-    const response = await fetch(
-      "http://ec2-43-204-230-105.ap-south-1.compute.amazonaws.com:3000" +
-        "/signin",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      }
-    );
+    const response = await fetch("https://apiflux.ronakpaul.com" + "/signin", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
     const data = await response.json();
 

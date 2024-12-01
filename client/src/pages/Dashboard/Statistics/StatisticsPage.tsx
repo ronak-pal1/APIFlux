@@ -35,9 +35,7 @@ const StatisticsPage = () => {
   const getSchedules = async () => {
     const userId = localStorage.getItem("userId");
 
-    const url =
-      "http://ec2-43-204-230-105.ap-south-1.compute.amazonaws.com:3000" +
-      `/schedules?id=${userId}`;
+    const url = "https://apiflux.ronakpaul.com" + `/schedules?id=${userId}`;
     const response = await fetch(url, {
       method: "GET",
       headers: {

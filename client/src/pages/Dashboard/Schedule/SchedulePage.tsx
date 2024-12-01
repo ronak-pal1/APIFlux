@@ -48,9 +48,7 @@ const ScheduleCard = ({
 
     try {
       const userId = localStorage.getItem("userId");
-      const url =
-        "http://ec2-43-204-230-105.ap-south-1.compute.amazonaws.com:3000" +
-        `/delete-schedule`;
+      const url = "https://apiflux.ronakpaul.com" + `/delete-schedule`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -77,9 +75,7 @@ const ScheduleCard = ({
 
     try {
       const userId = localStorage.getItem("userId");
-      const url =
-        "http://ec2-43-204-230-105.ap-south-1.compute.amazonaws.com:3000" +
-        `/update-schedule`;
+      const url = "https://apiflux.ronakpaul.com" + `/update-schedule`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -178,9 +174,7 @@ const SchedulePage = () => {
 
     const userId = localStorage.getItem("userId");
 
-    const url =
-      "http://ec2-43-204-230-105.ap-south-1.compute.amazonaws.com:3000" +
-      `/add-schedule`;
+    const url = "https://apiflux.ronakpaul.com" + `/add-schedule`;
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -214,9 +208,7 @@ const SchedulePage = () => {
   const getSchedules = async () => {
     const userId = localStorage.getItem("userId");
 
-    const url =
-      "http://ec2-43-204-230-105.ap-south-1.compute.amazonaws.com:3000" +
-      `/schedules?id=${userId}`;
+    const url = "https://apiflux.ronakpaul.com" + `/schedules?id=${userId}`;
     const response = await fetch(url, {
       method: "GET",
       headers: {
