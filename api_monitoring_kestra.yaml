@@ -49,6 +49,8 @@ tasks:
           if http_status == 200 :
             hit = hit+1
             totalRequests = totalRequests + 1
+          else :
+            totalRequests = totalRequests + 1
 
           query = {"_id": ObjectId('674a302fd13f9b389d1b66d0')}
           new_values = {"$set": {"scheduledAPIs.$[elem].hits": hit, "scheduledAPIs.$[elem].totalRequests":totalRequests,"scheduledAPIs.$[elem].responseTime":response_time}}
@@ -102,4 +104,4 @@ errors:
 triggers:
   - id: schedule
     type: io.kestra.plugin.core.trigger.Schedule
-    cron: "*/2 * * * *"
+    cron: "*/1 * * * *"
