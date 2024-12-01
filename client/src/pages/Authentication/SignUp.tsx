@@ -12,7 +12,7 @@ const SignUp = () => {
   const signup = async (e: any) => {
     e.preventDefault();
 
-    const url = import.meta.env.VITE_BACKEND_URL + "/signup";
+    const url = import.meta.env.VITE_PUBLIC_BACKEND_URL + "/signup";
     const response = await fetch(url, {
       method: "POST",
       headers: {

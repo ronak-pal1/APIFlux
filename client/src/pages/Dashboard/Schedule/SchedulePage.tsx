@@ -48,7 +48,7 @@ const ScheduleCard = ({
 
     try {
       const userId = localStorage.getItem("userId");
-      const url = import.meta.env.VITE_BACKEND_URL + `/delete-schedule`;
+      const url = import.meta.env.VITE_PUBLIC_BACKEND_URL + `/delete-schedule`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -75,7 +75,7 @@ const ScheduleCard = ({
 
     try {
       const userId = localStorage.getItem("userId");
-      const url = import.meta.env.VITE_BACKEND_URL + `/update-schedule`;
+      const url = import.meta.env.VITE_PUBLIC_BACKEND_URL + `/update-schedule`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -174,7 +174,7 @@ const SchedulePage = () => {
 
     const userId = localStorage.getItem("userId");
 
-    const url = import.meta.env.VITE_BACKEND_URL + `/add-schedule`;
+    const url = import.meta.env.VITE_PUBLIC_BACKEND_URL + `/add-schedule`;
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -208,7 +208,8 @@ const SchedulePage = () => {
   const getSchedules = async () => {
     const userId = localStorage.getItem("userId");
 
-    const url = import.meta.env.VITE_BACKEND_URL + `/schedules?id=${userId}`;
+    const url =
+      import.meta.env.VITE_PUBLIC_BACKEND_URL + `/schedules?id=${userId}`;
     const response = await fetch(url, {
       method: "GET",
       headers: {

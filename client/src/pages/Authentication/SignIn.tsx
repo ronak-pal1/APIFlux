@@ -20,13 +20,16 @@ const SignIn = () => {
   const signin = async (e: any) => {
     e.preventDefault();
 
-    const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    const response = await fetch(
+      import.meta.env.VITE_PUBLIC_BACKEND_URL + "/signin",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      }
+    );
 
     const data = await response.json();
 

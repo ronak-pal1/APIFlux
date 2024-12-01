@@ -35,7 +35,8 @@ const StatisticsPage = () => {
   const getSchedules = async () => {
     const userId = localStorage.getItem("userId");
 
-    const url = import.meta.env.VITE_BACKEND_URL + `/schedules?id=${userId}`;
+    const url =
+      import.meta.env.VITE_PUBLIC_BACKEND_URL + `/schedules?id=${userId}`;
     const response = await fetch(url, {
       method: "GET",
       headers: {
