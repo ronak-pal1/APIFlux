@@ -1,3 +1,7 @@
+<p align="center">
+<img src="https://github.com/ronak-pal1/APIFlux/blob/main/client/public/apifluxlogo.png" alt="API flux logo" width="150" />
+</p>
+
 # APIFlux: API Scheduling, Monitoring, and Statistics Platform
 
 **HackFrost Hackathon Project**  
@@ -48,7 +52,7 @@ Kestra is utilized to handle workflow automation for:
 
 ### Kestra Flow Example
 
-The kestra flow in yaml you can find at api_monitoring_kestra.yaml file
+The kestra flow in yaml you can find at **api_monitoring_kestra.yaml** file
 
 ---
 
