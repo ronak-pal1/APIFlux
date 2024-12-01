@@ -23,8 +23,8 @@
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: ReactJS, TailwindCSS, mui-icons
-- **Backend**: ExpressJS
+- **Frontend**: ReactJS, TailwindCSS, mui-icons, Vercel (for deploying)
+- **Backend**: ExpressJS, AWS
 - **Database**: MongoDB
 - **Workflow Automation**: Kestra
 
