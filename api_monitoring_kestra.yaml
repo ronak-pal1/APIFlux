@@ -49,7 +49,7 @@ tasks:
           else :
             totalRequests = totalRequests + 1
 
-          query = {"_id": ObjectId('674a302fd13f9b389d1b66d0')}
+          query = {"_id": ObjectId(user['_id'])}
           new_values = {"$set": {"scheduledAPIs.$[elem].hits": hit, "scheduledAPIs.$[elem].totalRequests":totalRequests,"scheduledAPIs.$[elem].responseTime":response_time}}
 
           array_filters = [{"elem._id": ObjectId(api['_id'])}]
